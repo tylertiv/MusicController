@@ -63,14 +63,13 @@ class CurrentSong(APIView):
         host = room.host
         endpoint = "player/currently-playing"
         response = execute_spotify_api_request(host, endpoint)
-        print(response)
 
         if 'error' in response or 'item' not in response:
             return Response({}, status=status.HTTP_204_NO_CONTENT)
 
         item = response.get('item')
         duration = item.get('duration_ms')
-        progress = response.get('progress_ms')
+        time = response.get('progress_ms')
         album_cover = item.get('album').get('images')[0].get('url')
         is_playing = response.get('is_playing')
         song_id = item.get('id')
@@ -86,7 +85,7 @@ class CurrentSong(APIView):
             'title': item.get('name'),
             'artist': artist_string,
             'duration' : duration,
-            'progress' : progress,
+            'time' : time,
             'image_url': album_cover,
             'is_playing': is_playing,
             'id': song_id,
