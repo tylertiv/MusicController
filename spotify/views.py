@@ -120,3 +120,14 @@ class PlaySong(APIView):
         if self.request.session.session_key == host or room.guest_can_pause:
             play_song(room.host)
             return Response({}, status=status.HTTP_200_OK)
+
+class SkipSong(APIView):
+    def post(self, request, format=None):
+        room_code = self.request.session.get('room_code')
+        room = Room.objects.filter(code=room_code)[0]
+
+        host = room.host
+        if self.request.session.session_key == host:
+            skip_song(room.host)
+            return Response({}, status=status.HTTP_200_OK)
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
